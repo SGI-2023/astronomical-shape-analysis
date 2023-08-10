@@ -72,3 +72,31 @@ def read_obj(file_path):
     meshes.append((vertices, faces))
 
     return meshes
+
+
+def intertia_tensor(points):
+    # Compute the inertia tensor for a point cloud
+    # for this code we assume that the mass of each point is 1
+    # Formulas from: http://www.kwon3d.com/theory/moi/iten.html
+    
+    # Get x, y, z coordinates for all points
+    x, y, z = points[:,0], points[:, 1], points[:, 2]
+    
+    # Diagonal terms of Inertia tensor
+    Ixx = np.sum(x^2 + y^2, axis=0)
+    Iyy = np.sum(z^2 + x^2, axis=0)
+    Izz = np.sum(x^2 + y^2, axis=0)
+    # Off diagonal terms
+    Ixy = -np.sum(x*y, axis=0)
+    Ixz = -np.sum(x*y, axis=0)
+    Iyz = -np.sum(y*z, axis=0)
+
+    # Intertia matrix
+    I = np.array([
+        [ Ixx, Ixy, Ixz ], 
+        [ Ixy, Iyy, Iyz ],
+        [ Ixz, Iyz, Izz ] 
+        ]   
+    )
+    
+    return I
